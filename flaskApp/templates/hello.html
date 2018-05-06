@@ -1,0 +1,43 @@
+<!doctype html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<html>
+   <body>
+
+      <h1>Hello {{ name }}!</h1>
+
+      <h2 id="imageClassPlaceHolder">Image class will show here</h2>
+      <input id="avatar" type="file" name="avatar" />
+        <button id="upload" value="Upload" />
+
+    <script>
+        $(document).on("click", "#upload", function() {
+            var file_data = $("#avatar").prop("files")[0];   // Getting the properties of file from file field
+            var form_data = new FormData();                  // Creating object of FormData class
+            form_data.append("file", file_data)              // Appending parameter named file with properties of file_field to form_data
+            form_data.append("user_id", 123)                 // Adding extra parameters to form_data
+            $.ajax({
+                        url: "http://127.0.0.1:5000/upload_avatar",
+                        dataType: 'script',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: form_data,                         // Setting the data attribute of ajax with file_data
+                        type: 'post',
+                        success: successRep
+               })
+        })
+
+        function successRep(data)
+        {
+            retObj = JSON.parse(data)
+            $('#imageClassPlaceHolder').text(retObj["imgClass"])
+        }
+
+    </script>
+
+   </body>
+</html>
