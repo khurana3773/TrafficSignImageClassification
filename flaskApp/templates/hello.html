@@ -1,19 +1,38 @@
 <!doctype html>
-
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 </head>
 
 <html>
    <body>
-
-      <h1>Hello {{ name }}!</h1>
-
-      <h2 id="imageClassPlaceHolder">Image class will show here</h2>
-      <input id="avatar" type="file" name="avatar" />
-        <button id="upload" value="Upload" />
-
+   <div class="justify-content-md-center" style="text-align:center; margin-top:60px;">
+		<h1>Traffic Signal Image Classification</h1>
+		<label style="margin-top:40px;">Select an image here</label>
+		<input id="avatar" type="file" name="avatar" onchange="readURL(this);" />
+		<div id="image-block" style="display:none;"><img id="blah" src="#" alt="your image" /></div>
+		<div style="margin-top:30px;">
+			<button id="upload" class="btn btn-primary" value="Upload"> Upload </button>
+		</div>
+	   <h4 id="imageClassPlaceHolder"></h4>
+	</div>
     <script>
+	function readURL(input) {
+		$("#image-block").css("display", "block")
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    .width(300)
+                    .height(300);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+	
         $(document).on("click", "#upload", function() {
             var file_data = $("#avatar").prop("files")[0];   // Getting the properties of file from file field
             var form_data = new FormData();                  // Creating object of FormData class
@@ -34,7 +53,7 @@
         function successRep(data)
         {
             retObj = JSON.parse(data)
-            $('#imageClassPlaceHolder').text(retObj["imgClass"])
+            $('#imageClassPlaceHolder').text("Above Image belongs to class "+retObj["imgClass"])
         }
 
     </script>
