@@ -6,6 +6,10 @@ import pickle
 from PIL import Image
 import sklearn
 from sklearn.svm import LinearSVC
+from numpy import genfromtxt
+import pandas as pd
+
+
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 target = os.path.join(APP_ROOT, 'images/')
@@ -15,12 +19,14 @@ app = Flask(__name__,template_folder='templates')
 extension = "png"
 fileName = "noimage.png"
 
+classNames =[]
+
 @app.route('/')
 def main():
     return render_template('hello.html', name='Suraj')
 
 def predict(classifierName="sklearn.MLP"):
-    global fileName, extension
+    global fileName, extension,classNames
 
     classifierRoot = APP_ROOT + "\\classifiers\\" +classifierName
 
@@ -40,8 +46,11 @@ def predict(classifierName="sklearn.MLP"):
     predict = PREDICT_IMAGES_NP.reshape((1, -1))
     classLabel = classifier.predict(predict)
 
+    classNumber = int(classLabel)
+    className = classNames[1][classNumber+1]
+
     return jsonify(
-        imgClass=classLabel[0]
+        imgClass=className
     )
 
 
@@ -95,7 +104,12 @@ def processImage(file):
 
 @app.route('/upload_avatar',methods=['POST'])
 def upload():
-    global fileName, extension
+    global fileName, extension, classNames
+
+    #initialize Class names
+    if len(classNames)==0:
+        classNames = pd.read_csv('signnames.csv', sep=',', header=None)
+
     print(target)
     if not os.path.isdir(target):
         os.mkdir(target)
@@ -118,5 +132,6 @@ def upload():
 
 if __name__ == "__main__":
     app.run()
+
 
 
