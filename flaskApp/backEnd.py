@@ -25,7 +25,7 @@ classNames =[]
 def main():
     return render_template('hello.html', name='Suraj')
 
-def predict(classifierName="sklearn.MLP"):
+def predict(classifierName="linSvcClassifier.p"):
     global fileName, extension,classNames
 
     classifierRoot = APP_ROOT + "\\classifiers\\" +classifierName
@@ -123,8 +123,13 @@ def upload():
 
     #TODO: remove hardcoding, currently processing image and storing it at /images as processed.jpg
     processImage(file)
+    retObj = 0
+    try:
+       retObj =  predict(request.form['classifier'])
+    except:
+        retObj = predict()
 
-    retObj =  predict("linSvcClassifier.p")
+
 
     return retObj
 
